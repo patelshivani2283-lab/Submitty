@@ -176,6 +176,9 @@ class UserProfileController extends AbstractController {
         $user = $this->core->getUser();
         if (isset($_POST['display-name-order'])) {
             $newDisplayNameOrdering = trim($_POST['display-name-order']);
+            if (!$user->validateUserData('display_name_order', $newDisplayNameOrdering)) {
+                return JsonResponse::getErrorResponse("Invalid option for display name order!");
+            }
             $user->setDisplayNameOrder($newDisplayNameOrdering);
             $user->setUserUpdated(true);
             $this->core->getQueries()->updateUser($user);

@@ -331,7 +331,27 @@ class UserTester extends \PHPUnit\Framework\TestCase {
             $return[] = ["user_preferred_{$key}", "A very long name that goes on for a long time and uses a lot of characters and holy smokes what a name it just keeps going", false];
         }
 
+        $return[] = ['display_name_order', 'GIVEN_F', true];
+        $return[] = ['display_name_order', 'FAMILY_F', true];
+        $return[] = ['display_name_order', 'INVALID', false];
+        $return[] = ['display_name_order', '', false];
+
         return $return;
+    }
+
+    public function testSetDisplayNameOrder(): void {
+        $user = new User($this->core, [
+            'user_id' => 'test',
+            'user_givenname' => 'John',
+            'user_familyname' => 'Doe',
+            'display_name_order' => 'GIVEN_F',
+        ]);
+        $user->setDisplayNameOrder('FAMILY_F');
+        $this->assertEquals('FAMILY_F', $user->getDisplayNameOrder());
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid display name order specified');
+        $user->setDisplayNameOrder('INVALID');
     }
 
     /**

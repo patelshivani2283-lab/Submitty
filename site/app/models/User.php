@@ -572,6 +572,13 @@ class User extends AbstractModel implements \JsonSerializable {
         $this->last_initial_format = $format;
     }
 
+    public function setDisplayNameOrder(string $display_name_order): void {
+        if (!self::validateUserData('display_name_order', $display_name_order)) {
+            throw new \InvalidArgumentException("Invalid display name order specified");
+        }
+        $this->display_name_order = $display_name_order;
+    }
+
     public function getNotificationSettings() {
         return $this->notification_settings; //either receives it or not
     }
@@ -779,6 +786,8 @@ class User extends AbstractModel implements \JsonSerializable {
             case 'student_registration_type':
                 // Student registration type must be one of either 'graded','audit', 'withdrawn', or 'staff'
                 return preg_match("~^(graded|audit|withdrawn|staff)$~", $data) === 1;
+            case 'display_name_order':
+                return in_array($data, ['GIVEN_F', 'FAMILY_F'], true);
             case 'user_password':
                 //Database password cannot be blank, no check on format
                 return $data !== "";
